@@ -1,32 +1,36 @@
 package com.ffucks;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UserService {
 
-    private final List<User> users = new ArrayList<>();
-
     public List<User> findAll() {
-        return users;
+        return User.listAll();
     }
 
-    public Optional<User> findById(Long id) {
-        return users.stream()
-                .filter(user -> user.id.equals(id))
-                .findFirst();
+    public User findById(Long id) {
+        return User.findById(id);
     }
 
+    @Transactional
     public User create(User user) {
-        users.add(user);
+        user.persist();
         return user;
     }
 
+    @Transactional
     public boolean delete(Long id) {
-        return users.removeIf(user -> user.id.equals(id));
+        User user = User.findById(id);
+
+        if (user == null) {
+            return false;
+        }
+
+        user.delete();
+        return true;
     }
 }

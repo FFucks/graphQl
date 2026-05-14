@@ -18,18 +18,16 @@ public class UserGraphQlResource {
 
     @Query("userById")
     public User userById(@Name("id") Long id) {
-        return userService.findById(id)
-                .orElse(null);
+        return userService.findById(id);
     }
 
     @Mutation
     public User createUser(
-            @Name("id") Long id,
             @Name("name") String name,
             @Name("email") String email
     ) {
 
-        User user = new User(id, name, email);
+        User user = new User(name, email);
 
         return userService.create(user);
     }
